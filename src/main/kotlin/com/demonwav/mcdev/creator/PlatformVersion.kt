@@ -10,6 +10,7 @@
 
 package com.demonwav.mcdev.creator
 
+import com.demonwav.mcdev.MinecraftSettings
 import com.demonwav.mcdev.platform.PlatformType
 import com.demonwav.mcdev.util.ProxyHttpConnectionFactory
 import com.demonwav.mcdev.util.fromJson
@@ -25,12 +26,30 @@ private const val githubBaseUrl = "https://raw.githubusercontent.com/minecraft-d
 fun getVersionSelector(type: PlatformType): PlatformVersion {
     val versionJson = type.versionJson ?: throw UnsupportedOperationException("Incorrect platform type: $type")
 
+    val settings = MinecraftSettings.instance
+
+    var platformVersion: PlatformVersion? = null
+
+    if (settings.useCustomVersionUrl && settings.customVersionUrl.isNotEmpty()) {
+        platformVersion = tryDoCall(settings.customVersionUrl + versionJson)
+    }
+
+    if (platformVersion == null) {
+        platformVersion = tryDoCall(cloudflareBaseUrl + versionJson)
+    }
+
+    if (platformVersion == null) {
+        platformVersion = doCall(githubBaseUrl + versionJson)
+    }
+
+    return platformVersion
+}
+
+private fun tryDoCall(urlText: String): PlatformVersion? {
     return try {
-        // attempt cloudflare
-        doCall(cloudflareBaseUrl + versionJson)
+        doCall(urlText)
     } catch (e: IOException) {
-        // if that fails, attempt github
-        doCall(githubBaseUrl + versionJson)
+        null
     }
 }
 

@@ -13,11 +13,7 @@ package com.demonwav.mcdev
 import com.demonwav.mcdev.update.ConfigurePluginUpdatesDialog
 import com.intellij.openapi.options.Configurable
 import org.jetbrains.annotations.Nls
-import javax.swing.JButton
-import javax.swing.JCheckBox
-import javax.swing.JComboBox
-import javax.swing.JComponent
-import javax.swing.JPanel
+import javax.swing.*
 
 class MinecraftConfigurable : Configurable {
 
@@ -28,6 +24,8 @@ class MinecraftConfigurable : Configurable {
     private lateinit var chatColorUnderlinesComboBox: JComboBox<MinecraftSettings.UnderlineType>
     private lateinit var showChatGutterIconsCheckBox: JCheckBox
     private lateinit var changePluginUpdateChannelButton: JButton
+    private lateinit var useCustomVersionUrl: JCheckBox
+    private lateinit var customVersionUrl: JTextField
 
     @Nls
     override fun getDisplayName() = "Minecraft Development"
@@ -55,6 +53,9 @@ class MinecraftConfigurable : Configurable {
         setUnderlineBox()
 
         changePluginUpdateChannelButton.addActionListener { ConfigurePluginUpdatesDialog().show() }
+
+        useCustomVersionUrl.isSelected = settings.useCustomVersionUrl
+        customVersionUrl.text = settings.customVersionUrl
     }
 
     private fun setUnderlineBox() {
@@ -68,7 +69,9 @@ class MinecraftConfigurable : Configurable {
             showEventListenerGutterCheckBox.isSelected != settings.isShowEventListenerGutterIcons ||
             showChatGutterIconsCheckBox.isSelected != settings.isShowChatColorGutterIcons ||
             showChatColorUnderlinesCheckBox.isSelected != settings.isShowChatColorUnderlines ||
-            chatColorUnderlinesComboBox.selectedItem !== settings.underlineType
+            chatColorUnderlinesComboBox.selectedItem !== settings.underlineType ||
+            useCustomVersionUrl.isSelected != settings.useCustomVersionUrl ||
+            customVersionUrl.text != settings.customVersionUrl
     }
 
     override fun apply() {
@@ -79,6 +82,8 @@ class MinecraftConfigurable : Configurable {
         settings.isShowChatColorGutterIcons = showChatGutterIconsCheckBox.isSelected
         settings.isShowChatColorUnderlines = showChatColorUnderlinesCheckBox.isSelected
         settings.underlineType = chatColorUnderlinesComboBox.selectedItem as MinecraftSettings.UnderlineType
+        settings.useCustomVersionUrl = useCustomVersionUrl.isSelected
+        settings.customVersionUrl = customVersionUrl.text
     }
 
     override fun reset() {

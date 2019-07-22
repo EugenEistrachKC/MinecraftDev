@@ -25,7 +25,9 @@ class MinecraftSettings : PersistentStateComponent<MinecraftSettings.State> {
         var isShowEventListenerGutterIcons: Boolean = true,
         var isShowChatColorGutterIcons: Boolean = true,
         var isShowChatColorUnderlines: Boolean = false,
-        var underlineType: MinecraftSettings.UnderlineType = MinecraftSettings.UnderlineType.DOTTED
+        var underlineType: MinecraftSettings.UnderlineType = MinecraftSettings.UnderlineType.DOTTED,
+        var useCustomVersionUrl: Boolean = false,
+        var customVersionUrl: String = ""
     )
 
     private var state = State()
@@ -67,6 +69,18 @@ class MinecraftSettings : PersistentStateComponent<MinecraftSettings.State> {
         get() = state.underlineType
         set(underlineType) {
             state.underlineType = underlineType
+        }
+
+    var useCustomVersionUrl: Boolean
+        get() = state.useCustomVersionUrl
+        set(useCustomVersionUrl) {
+            state.useCustomVersionUrl = useCustomVersionUrl
+        }
+
+    var customVersionUrl: String
+        get() = state.customVersionUrl
+        set(customVersionUrl) {
+            state.customVersionUrl = customVersionUrl
         }
 
     val underlineTypeIndex: Int
